@@ -20,14 +20,20 @@ const App = ({ className }) => {
   const [speed, setSpeed] = useState(DEFAULTS.SPEED);
   const [text, setText] = useState(DEFAULTS.TEXT);
   const [speech, setSpeech] = useState(DEFAULTS.SPEECH);
-  const [filetext, setFileText] = useState("");
+  const [filetext, setFileText] = useState(false);
   const [play, setPlay] = useState(false);
 
   const handleClick = () => {
-    const audioSrc = `http://api.voicerss.org/?key=${apiKey}&hl=${language}&src=${text}&r=${speed}`
+    if (filetext) {
+      console.log("File Uploaded")
+    }
+    else {
+      const audioSrc = `http://api.voicerss.org/?key=${apiKey}&hl=${language}&src=${text}&r=${speed}`
 
-    setSpeech(audioSrc);
-    setPlay(false)
+      setSpeech(audioSrc);
+      setPlay(false)
+    }
+
   };
 
   const playFile = () => {
@@ -52,7 +58,7 @@ const App = ({ className }) => {
             <div style={{ textAlign: "center" }}>OR</div>
           </Grid>
           <Grid item xs={12}>
-            <FileInput value={filetext} setValue={setFileText}></FileInput>
+            <FileInput value={filetext} setValue={setFileText} setSp={setSpeech}></FileInput>
           </Grid>
           <Grid item xs={12}>
             <Button

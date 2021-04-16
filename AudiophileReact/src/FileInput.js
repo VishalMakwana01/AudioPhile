@@ -8,33 +8,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import { pdfjs } from "react-pdf"
 import Button from '@material-ui/core/Button';
 
-const FileInput = ({ value, setValue }) => {
-  const [selectFile, setSelectFile] = useState(null);
-  const fileData = () => {
-    if (selectFile) {
-
-      return (
-        <div>
-          <h2>File Details:</h2>
-          <p>File Name: {selectFile.name}</p>
-          <p>File Type: {selectFile.type}</p>
-          <p>
-            Last Modified:{" "}
-            {selectFile.lastModifiedDate.toDateString()}
-          </p>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <br />
-          <FormHelperText>Choose before Pressing the Upload button</FormHelperText>
-        </div>
-      );
-    }
-  };
+const FileInput = ({ value, setValue, setSp }) => {
   const hiddenFileInput = React.useRef(null);
-
+  const [state, setState] = useState(false);
   const handleClick = event => {
     hiddenFileInput.current.click();
   };
@@ -46,8 +22,15 @@ const FileInput = ({ value, setValue }) => {
       event.target.files[0].name
     )
     console.log(formData)
+    setValue(true)
+    setSp(null)
+    setState(true)
   };
-
+  const renderUpload = () => {
+    if (state) {
+      return <FormHelperText>File Uploaded</FormHelperText>
+    }
+  }
   return (
     <Fragment>
       <div style={{ display: "flex", flexDirection: 'row' }}>
@@ -62,7 +45,7 @@ const FileInput = ({ value, setValue }) => {
           Upload File
           </Button></div>
       </div>
-      {fileData()}
+      {renderUpload()}
     </Fragment>
   );
 }
