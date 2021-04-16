@@ -21,13 +21,18 @@ const App = ({ className }) => {
   const [text, setText] = useState(DEFAULTS.TEXT);
   const [speech, setSpeech] = useState(DEFAULTS.SPEECH);
   const [filetext, setFileText] = useState("");
-  const [file, setFile] = useState(false);
+  const [play, setPlay] = useState(false);
 
   const handleClick = () => {
     const audioSrc = `http://api.voicerss.org/?key=${apiKey}&hl=${language}&src=${text}&r=${speed}`
 
     setSpeech(audioSrc);
   };
+
+  const playFile = () => {
+    console.log("Playig")
+    setPlay(true);
+  }
   return (
     <>{console.log(filetext)}
       <Navbar />
@@ -45,9 +50,9 @@ const App = ({ className }) => {
           <Grid item xs={12}>
             <div style={{ textAlign: "center" }}>OR</div>
           </Grid>
-          {/*<Grid item xs={12}>
+          <Grid item xs={12}>
             <FileInput value={filetext} setValue={setFileText}></FileInput>
-          </Grid>*/}
+          </Grid>
           <Grid item xs={12}>
             <Button
               variant="contained"
@@ -57,14 +62,28 @@ const App = ({ className }) => {
               Click To Speech
           </Button>
           </Grid>
-          <Grid item xs={12} >
+          <Grid item xs={6} >
             {speech
-              && <a href={speech} target="_blank" download="audio.mp3"><Button
+              &&
+              <a href={speech} target="_blank" download="audio.mp3"><Button
                 variant="contained"
                 color="primary"
               >
                 Download Audio File
-          </Button></a>}
+          </Button></a>
+            }
+
+          </Grid>
+          <Grid item xs={6} >
+            {speech
+              && <Button
+                variant="contained"
+                color="primary"
+                onClick={playFile}
+              >
+                Play Audio File
+        </Button>
+            }{play && <audio src={speech} autoPlay></audio>}
           </Grid>
         </Grid>
       </div>

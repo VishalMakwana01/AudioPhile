@@ -19,7 +19,7 @@ export default function Navbar() {
 
                     </IconButton>
                     <Typography variant="h6" color="inherit">
-                        Photos
+                        AudioPhile
           </Typography>
                 </Toolbar>
             </AppBar>

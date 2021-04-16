@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -6,59 +6,63 @@ import Slider from '@material-ui/lab/Slider';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { pdfjs } from "react-pdf"
-
+import Button from '@material-ui/core/Button';
 
 const FileInput = ({ value, setValue }) => {
+  const [selectFile, setSelectFile] = useState(null);
+  const fileData = () => {
+    if (selectFile) {
 
+      return (
+        <div>
+          <h2>File Details:</h2>
+          <p>File Name: {selectFile.name}</p>
+          <p>File Type: {selectFile.type}</p>
+          <p>
+            Last Modified:{" "}
+            {selectFile.lastModifiedDate.toDateString()}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <br />
+          <FormHelperText>Choose before Pressing the Upload button</FormHelperText>
+        </div>
+      );
+    }
+  };
+  const hiddenFileInput = React.useRef(null);
+
+  const handleClick = event => {
+    hiddenFileInput.current.click();
+  };
   const handleChange = (event, value) => {
-    const file = event.target.files[0]
-    console.log(file)
-    pdfjs.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
-    var pdfDocument = file;
-    var pagesPromises = [];
-
-    for (var i = 0; i < file.pdfInfo.numPages; i++) {
-      // Required to prevent that i is always the total of pages
-      (function (pageNumber) {
-        pagesPromises.push(getPageText(pageNumber, pdfDocument));
-      })(i + 1);
-    }
-
-    Promise.all(pagesPromises).then(function (pagesText) {
-      // Remove loading
-      // Render text
-      for (var i = 0; i < pagesText.length; i++) {
-        console.log(pagesText[i]);;
-      }
-    });
-    function getPageText(pageNum, PDFDocumentInstance) {
-      // Return a Promise that is solved once the text of the page is retrieven
-      return new Promise(function (resolve, reject) {
-        PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
-          // The main trick to obtain the text of the PDF page, use the getTextContent method
-          pdfPage.getTextContent().then(function (textContent) {
-            var textItems = textContent.items;
-            var finalString = "";
-
-            // Concatenate the string of the item to the final string
-            for (var i = 0; i < textItems.length; i++) {
-              var item = textItems[i];
-
-              finalString += item.str + " ";
-            }
-
-            // Solve promise with the text retrieven from the page
-            resolve(finalString);
-          });
-        });
-      });
-    }
+    const formData = new FormData();
+    formData.append(
+      "myFile",
+      event.target.files[0],
+      event.target.files[0].name
+    )
+    console.log(formData)
   };
 
   return (
     <Fragment>
-      <input type='file' value={value} onChange={handleChange}></input>
-      <FormHelperText>Upload File</FormHelperText>
+      <div style={{ display: "flex", flexDirection: 'row' }}>
+        <div style={{ width: "0%" }}> <input type='file' ref={hiddenFileInput} accept="application/pdf" onChange={handleChange}
+          style={{ display: "none" }}
+        ></input></div>
+        <div style={{ width: "50%" }}><Button
+          variant="contained"
+          color="primary"
+          onClick={handleClick}
+        >
+          Upload File
+          </Button></div>
+      </div>
+      {fileData()}
     </Fragment>
   );
 }
