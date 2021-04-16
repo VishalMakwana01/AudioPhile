@@ -27,6 +27,7 @@ const App = ({ className }) => {
     const audioSrc = `http://api.voicerss.org/?key=${apiKey}&hl=${language}&src=${text}&r=${speed}`
 
     setSpeech(audioSrc);
+    setPlay(false)
   };
 
   const playFile = () => {
@@ -59,7 +60,7 @@ const App = ({ className }) => {
               color="primary"
               onClick={handleClick}
             >
-              Click To Speech
+              Convert
           </Button>
           </Grid>
           <Grid item xs={6} >
@@ -69,7 +70,7 @@ const App = ({ className }) => {
                 variant="contained"
                 color="primary"
               >
-                Download Audio File
+                Download
           </Button></a>
             }
 
@@ -81,7 +82,7 @@ const App = ({ className }) => {
                 color="primary"
                 onClick={playFile}
               >
-                Play Audio File
+                Play
         </Button>
             }{play && <audio src={speech} autoPlay></audio>}
           </Grid>
