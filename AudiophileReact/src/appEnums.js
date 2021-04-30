@@ -1,7 +1,7 @@
 export const LANGUAGES = [
   {
     CODE: 'en-us',
-    NAME: 'English (United States)'
+    NAME: 'English'
   },
   {
     CODE: 'de-de',
