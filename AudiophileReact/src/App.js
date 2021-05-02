@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import { DEFAULTS } from './appEnums';
 import Navbar from './Navbar';
 import FileInput from './FileInput';
+import axios from 'axios';
 
 const apiKey = '332c16d1a8db4a10b44047fd0888b485';
 
@@ -24,24 +25,30 @@ const App = ({ className }) => {
   const [play, setPlay] = useState(false);
 
   const handleClick = () => {
-    if (filetext) {
-      console.log("File Uploaded")
-    }
-    else {
-      const audioSrc = `http://api.voicerss.org/?key=${apiKey}&hl=${language}&src=${text}&r=${speed}`
-
-      setSpeech(audioSrc);
-      setPlay(false)
-    }
+    setPlay(true)
 
   };
+  const handleTextClick = () => {
+    if (text.trim() == "") {
+      alert("Enter text")
+    }
+    else {
+      const body = { text: text }
+      console.log(body)
+      axios
+        .post("http://127.0.0.1:8000/audio/", body)
+        .then(res => setSpeech(res.data.url))
+        .catch((err) => console.log(err));
+      setSpeech("http://127.0.0.1:8000/audio/")
 
+    }
+  }
   const playFile = () => {
     console.log("Playig")
     setPlay(true);
   }
   return (
-    <>{console.log(filetext)}
+    <>{console.log(speech)}
       <Navbar />
       <div className={className}>
         <Grid container spacing={16}>
@@ -54,43 +61,53 @@ const App = ({ className }) => {
           <Grid item xs={12}>
             <TextToSpeech value={text} setValue={setText} />
           </Grid>
+          <Grid item xs={12} >
+            <div style={{ textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleTextClick()}
+              >
+                Convert
+          </Button>
+            </div>
+          </Grid>
           <Grid item xs={12}>
             <div style={{ textAlign: "center" }}>OR</div>
           </Grid>
           <Grid item xs={12}>
-            <FileInput value={filetext} setValue={setFileText} setSp={setSpeech}></FileInput>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleClick}
-            >
-              Convert
-          </Button>
+            <div style={{ textAlign: "center" }}>
+              <FileInput setSp={setSpeech}></FileInput>
+            </div>
           </Grid>
           <Grid item xs={6} >
             {speech
               &&
-              <a href={speech} target="_blank" download="audio.mp3"><Button
-                variant="contained"
-                color="primary"
-              >
-                Download
+              <div style={{ textAlign: "center" }}>
+                <a href={speech} target="_blank" download="audio.mp3"><Button
+                  variant="contained"
+                  color="primary"
+                >
+                  Download
           </Button></a>
+              </div>
             }
 
           </Grid>
           <Grid item xs={6} >
             {speech
-              && <Button
-                variant="contained"
-                color="primary"
-                onClick={playFile}
-              >
-                Play
-        </Button>
+              &&
+              <div style={{ textAlign: "center" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClick}
+                >
+                  Play
+          </Button>
+              </div>
             }{play && <audio src={speech} autoPlay></audio>}
+
           </Grid>
         </Grid>
       </div>

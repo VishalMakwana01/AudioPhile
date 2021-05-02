@@ -18,9 +18,9 @@ export default function Navbar() {
                     <IconButton edge="start" color="inherit" aria-label="menu">
 
                     </IconButton>
-                    <Typography variant="h6" color="inherit">
-                        AudioPhile
-          </Typography>
+                    <Typography variant="h6" color="inherit" >
+                        <span style={{ marginLeft: "200px" }}>AudioPhile</span>
+                    </Typography>
                 </Toolbar>
             </AppBar>
         </div>

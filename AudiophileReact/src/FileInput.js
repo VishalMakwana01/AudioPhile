@@ -7,24 +7,32 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { pdfjs } from "react-pdf"
 import Button from '@material-ui/core/Button';
+import axios from "axios"
 
-const FileInput = ({ value, setValue, setSp }) => {
+const FileInput = ({ setSp }) => {
   const hiddenFileInput = React.useRef(null);
   const [state, setState] = useState(false);
   const handleClick = event => {
     hiddenFileInput.current.click();
   };
-  const handleChange = (event, value) => {
+  const handleChange = async (event, value) => {
     const formData = new FormData();
-    formData.append(
-      "myFile",
-      event.target.files[0],
-      event.target.files[0].name
-    )
-    console.log(formData)
-    setValue(true)
-    setSp(null)
-    setState(true)
+    if (event.target && event.target.files) {
+      formData.append(
+        "ebook",
+        event.target.files[0],
+        event.target.files[0].name
+      )
+      axios
+        .post("http://127.0.0.1:8000/audio/", formData)
+        .then(res => setSp(res.data.url))
+        .catch((err) => console.log(err));
+
+      console.log(formData)
+
+      setState(true)
+    }
+
   };
   const renderUpload = () => {
     if (state) {
@@ -37,7 +45,7 @@ const FileInput = ({ value, setValue, setSp }) => {
         <div style={{ width: "0%" }}> <input type='file' ref={hiddenFileInput} accept="application/pdf" onChange={handleChange}
           style={{ display: "none" }}
         ></input></div>
-        <div style={{ width: "50%" }}><Button
+        <div style={{ width: "100%" }}><Button
           variant="contained"
           color="primary"
           onClick={handleClick}
