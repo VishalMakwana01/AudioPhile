@@ -25,7 +25,7 @@ class AudioBook(APIView):
 
         melgan = torch.hub.load('seungwonpark/melgan', 'melgan')
         melgan.eval()
-        if(request.data and request.data['text']):
+        if(request.data and ('text' in request.data)):
             content=(request.data['text'])
             sequence = np.array(tacotron2.text_to_sequence(content, ['english_cleaners']))[None, :]
             sequence = torch.from_numpy(sequence).to(device='cuda', dtype=torch.int64)
@@ -61,21 +61,14 @@ class AudioBook(APIView):
                     page = pdf.pages[i]
                     i+=1
                     total_content += (" "+ page.extract_text())
+                    print(total_content)
             total_content = total_content.split(".")
             total_content = list(filter(None, total_content))
-            total_content = [s+". " for s in total_content]
+            total_content = [". "+s for s in total_content]
             #total_content=". ".join(total_content)
             print("Content is here")
             print(total_content)
             audio_list = []
-
-
-            tacotron2 = torch.hub.load('nvidia/DeepLearningExamples:torchhub', 'nvidia_tacotron2')
-            tacotron2 = tacotron2.to('cuda')
-            tacotron2.eval()
-
-            melgan = torch.hub.load('seungwonpark/melgan', 'melgan')
-            melgan.eval()
             # content = 'My name is Nirav'
             for content in total_content:
 
@@ -92,8 +85,8 @@ class AudioBook(APIView):
 
                         # print(mel.shape)
                     audio = melgan.inference(mel)
-
                     audio_list.append(audio.cpu().detach().numpy())
+                    #audio_list.append(np.zeros(50000))
             
             audio = np.concatenate(audio_list)
             rate = 22050
