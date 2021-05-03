@@ -5,11 +5,10 @@ import styled from 'styled-components';
 import Slider from '@material-ui/lab/Slider';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { pdfjs } from "react-pdf"
 import Button from '@material-ui/core/Button';
 import axios from "axios"
 
-const FileInput = ({ setSp }) => {
+const FileInput = ({ setSp, setLd }) => {
   const hiddenFileInput = React.useRef(null);
   const [state, setState] = useState(false);
   const handleClick = event => {
@@ -17,6 +16,7 @@ const FileInput = ({ setSp }) => {
   };
   const handleChange = async (event, value) => {
     const formData = new FormData();
+    setLd(true)
     if (event.target && event.target.files) {
       formData.append(
         "ebook",
@@ -26,6 +26,7 @@ const FileInput = ({ setSp }) => {
       axios
         .post("http://127.0.0.1:8000/audio/", formData)
         .then(res => setSp(res.data.url))
+        .then(rs => setLd(false))
         .catch((err) => console.log(err));
 
       console.log(formData)

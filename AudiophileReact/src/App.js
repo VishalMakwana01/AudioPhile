@@ -13,7 +13,7 @@ import { DEFAULTS } from './appEnums';
 import Navbar from './Navbar';
 import FileInput from './FileInput';
 import axios from 'axios';
-
+import "./spinner.css"
 const apiKey = '332c16d1a8db4a10b44047fd0888b485';
 
 const App = ({ className }) => {
@@ -23,23 +23,25 @@ const App = ({ className }) => {
   const [speech, setSpeech] = useState(DEFAULTS.SPEECH);
   const [filetext, setFileText] = useState(false);
   const [play, setPlay] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClick = () => {
-    setPlay(true)
+    setPlay(!play)
 
   };
-  const handleTextClick = () => {
+  const handleTextClick = async () => {
+    setLoading(true);
     if (text.trim() == "") {
       alert("Enter text")
     }
     else {
       const body = { text: text }
       console.log(body)
-      axios
+      await axios
         .post("http://127.0.0.1:8000/audio/", body)
         .then(res => setSpeech(res.data.url))
+        .then(rs => setLoading(false))
         .catch((err) => console.log(err));
-      setSpeech("http://127.0.0.1:8000/audio/")
 
     }
   }
@@ -48,7 +50,7 @@ const App = ({ className }) => {
     setPlay(true);
   }
   return (
-    <>{console.log(speech)}
+    <>{console.log(loading)}
       <Navbar />
       <div className={className}>
         <Grid container spacing={16}>
@@ -77,14 +79,18 @@ const App = ({ className }) => {
           </Grid>
           <Grid item xs={12}>
             <div style={{ textAlign: "center" }}>
-              <FileInput setSp={setSpeech}></FileInput>
+              <FileInput setSp={setSpeech} setLd={setLoading}></FileInput>
             </div>
+          </Grid>
+          <Grid item xs={12}>
+            {loading && <div style={{ textAlign: "center" }} className="loader">
+            </div>}
           </Grid>
           <Grid item xs={6} >
             {speech
               &&
               <div style={{ textAlign: "center" }}>
-                <a href={speech} target="_blank" download="audio.mp3"><Button
+                <a href={speech} target="_blank" download="audio.wav"><Button
                   variant="contained"
                   color="primary"
                 >

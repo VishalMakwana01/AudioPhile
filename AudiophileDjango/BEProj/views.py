@@ -44,9 +44,10 @@ class AudioBook(APIView):
                     page = pdf.pages[i]
                     i+=1
                     total_content += page.extract_text()
-            default_storage.delete(file.name)
+            #default_storage.delete(file.name)
         total_content = total_content.replace("\n","").split(".")
         total_content = list(filter(None, total_content))
+        total_content=[s+"." for s in total_content]
 
         
 
